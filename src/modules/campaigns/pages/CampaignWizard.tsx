@@ -1,7 +1,9 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@razorpay/blade/components';
 import { useWizardState, WIZARD_STEPS } from '../hooks/useWizardState';
+import { mockCampaigns } from '../mocks/campaigns.mock';
+import { mockAds } from '../../ads/mocks/ads.mock';
 import WizardLayout from '../components/wizard/WizardLayout';
 import StepAdvertiser from '../components/wizard/StepAdvertiser';
 import StepCampaignDetails from '../components/wizard/StepCampaignDetails';
@@ -9,10 +11,34 @@ import StepAddAds from '../components/wizard/StepAddAds';
 import StepAttachCreatives from '../components/wizard/StepAttachCreatives';
 import StepReviewLaunch from '../components/wizard/StepReviewLaunch';
 
-function CampaignWizard() {
+interface CampaignWizardProps {
+  mode?: 'create' | 'edit' | 'clone';
+}
+
+function CampaignWizard({ mode = 'create' }: CampaignWizardProps) {
   const navigate = useNavigate();
   const toast = useToast();
+  const { id } = useParams<{ id: string }>();
   const wizard = useWizardState();
+
+  // Load campaign data for edit/clone modes
+  useEffect(() => {
+    if ((mode === 'edit' || mode === 'clone') && id) {
+      const campaign = mockCampaigns.find((c) => c.id === id);
+      if (!campaign) {
+        toast.show({
+          content: 'Campaign not found',
+          color: 'negative',
+          autoDismiss: true,
+        });
+        navigate('/admin/campaigns');
+        return;
+      }
+
+      const campaignAds = mockAds.filter((ad) => ad.campaignId === id);
+      wizard.loadCampaignData(campaign, campaignAds, mode);
+    }
+  }, [mode, id]);
 
   const handleCancel = () => {
     navigate('/admin/campaigns');
@@ -37,24 +63,48 @@ function CampaignWizard() {
 
   const handleNext = () => {
     if (wizard.currentStep === WIZARD_STEPS.length - 1) {
-      // Last step: launch
+      // Last step: launch or update
       const validation = wizard.validateStep(4);
       if (!validation.isValid) {
         toast.show({
-          content: 'Please fix all validation errors before launching',
+          content: mode === 'edit' ? 'Please fix all validation errors before updating' : 'Please fix all validation errors before launching',
           color: 'negative',
           autoDismiss: true,
         });
         return;
       }
+
+      const actionText = mode === 'edit' ? 'updated' : mode === 'clone' ? 'cloned and launched' : 'launched';
       toast.show({
-        content: `Campaign "${wizard.formData.campaignName}" launched successfully!`,
+        content: `Campaign "${wizard.formData.campaignName}" ${actionText} successfully!`,
         color: 'positive',
         autoDismiss: true,
       });
       navigate('/admin/campaigns');
     } else {
       wizard.goNext();
+    }
+  };
+
+  const getPageTitle = () => {
+    switch (mode) {
+      case 'edit':
+        return 'Edit Campaign';
+      case 'clone':
+        return 'Clone Campaign';
+      default:
+        return 'Create Campaign';
+    }
+  };
+
+  const getSubmitButtonText = () => {
+    switch (mode) {
+      case 'edit':
+        return 'Update Campaign';
+      case 'clone':
+        return 'Launch Cloned Campaign';
+      default:
+        return 'Launch Campaign';
     }
   };
 

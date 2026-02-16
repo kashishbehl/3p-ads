@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -12,6 +13,8 @@ import {
   PauseIcon,
   PlayIcon,
   CloseIcon,
+  EditIcon,
+  CopyIcon,
 } from '@razorpay/blade/components';
 import type { Campaign } from '../types';
 
@@ -21,6 +24,7 @@ interface CampaignActionsProps {
 }
 
 function CampaignActions({ campaign, onActivate }: CampaignActionsProps) {
+  const navigate = useNavigate();
   const toast = useToast();
   const [showPauseModal, setShowPauseModal] = useState(false);
   const [showTerminateModal, setShowTerminateModal] = useState(false);
@@ -46,7 +50,7 @@ function CampaignActions({ campaign, onActivate }: CampaignActionsProps) {
 
   return (
     <>
-      <Box display="flex" gap="spacing.3">
+      <Box display="flex" gap="spacing.3" flexWrap="wrap">
         {campaign.status === 'DRAFT' && (
           <Button color="positive" onClick={onActivate}>
             Activate
@@ -63,9 +67,25 @@ function CampaignActions({ campaign, onActivate }: CampaignActionsProps) {
           </Button>
         )}
         {campaign.status !== 'TERMINATED' && (
-          <Button variant="secondary" color="negative" icon={CloseIcon} onClick={() => setShowTerminateModal(true)}>
-            Terminate
-          </Button>
+          <>
+            <Button
+              variant="secondary"
+              icon={EditIcon}
+              onClick={() => navigate(`/admin/campaigns/${campaign.id}/edit`)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="secondary"
+              icon={CopyIcon}
+              onClick={() => navigate(`/admin/campaigns/${campaign.id}/clone`)}
+            >
+              Clone
+            </Button>
+            <Button variant="secondary" color="negative" icon={CloseIcon} onClick={() => setShowTerminateModal(true)}>
+              Terminate
+            </Button>
+          </>
         )}
       </Box>
 

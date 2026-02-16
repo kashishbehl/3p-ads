@@ -12,6 +12,20 @@ export const formatCurrency = (valueInPaisa: number): string => {
 };
 
 /**
+ * Convert rupees to paisa (multiply by 100)
+ */
+export const rupeesToPaisa = (rupees: number): number => {
+  return Math.round(rupees * 100);
+};
+
+/**
+ * Convert paisa to rupees (divide by 100)
+ */
+export const paisaToRupees = (paisa: number): number => {
+  return paisa / 100;
+};
+
+/**
  * Format date string to locale display
  */
 export const formatDate = (dateString: string): string => {

@@ -26,6 +26,8 @@ import {
   PlusIcon,
   CopyIcon,
   EyeIcon,
+  EditIcon,
+  MoreIcon,
   Dropdown,
   DropdownOverlay,
   SelectInput,
@@ -140,6 +142,7 @@ function CampaignsList() {
         sortFunctions={{
           NAME: (arr) => [...arr].sort((a, b) => a.name.localeCompare(b.name)),
           BUDGET: (arr) => [...arr].sort((a, b) => a.totalBudget - b.totalBudget),
+          CREATED_AT: (arr) => [...arr].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
         }}
       >
         {(tableData) => (
@@ -154,7 +157,7 @@ function CampaignsList() {
                 <TableHeaderCell headerKey="BUDGET" textAlign="right">Budget</TableHeaderCell>
                 <TableHeaderCell textAlign="center">Readiness</TableHeaderCell>
                 <TableHeaderCell>Status</TableHeaderCell>
-                <TableHeaderCell>Created</TableHeaderCell>
+                <TableHeaderCell headerKey="CREATED_AT">Created</TableHeaderCell>
                 <TableHeaderCell textAlign="center">Actions</TableHeaderCell>
               </TableHeaderRow>
             </TableHeader>
@@ -211,9 +214,33 @@ function CampaignsList() {
                       <Text size="small">{formatDate(item.createdAt)}</Text>
                     </TableCell>
                     <TableCell textAlign="center">
-                      <Tooltip content="Open Workspace">
-                        <IconButton icon={EyeIcon} size="small" accessibilityLabel="View" onClick={() => navigate(`/admin/campaigns/${item.id}`)} />
-                      </Tooltip>
+                      <Dropdown>
+                        <IconButton
+                          icon={MoreIcon}
+                          size="small"
+                          accessibilityLabel="Actions"
+                        />
+                        <DropdownOverlay>
+                          <ActionList>
+                            <ActionListItem
+                              title="View Workspace"
+                              leading={<EyeIcon />}
+                              onClick={() => navigate(`/admin/campaigns/${item.id}`)}
+                            />
+                            <ActionListItem
+                              title="Edit"
+                              leading={<EditIcon />}
+                              onClick={() => navigate(`/admin/campaigns/${item.id}/edit`)}
+                              isDisabled={item.status === 'TERMINATED'}
+                            />
+                            <ActionListItem
+                              title="Clone"
+                              leading={<CopyIcon />}
+                              onClick={() => navigate(`/admin/campaigns/${item.id}/clone`)}
+                            />
+                          </ActionList>
+                        </DropdownOverlay>
+                      </Dropdown>
                     </TableCell>
                   </TableRow>
                 );

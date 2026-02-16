@@ -12,10 +12,15 @@ import {
   Radio,
   Alert,
   Badge,
-  Divider,
+  Dropdown,
+  DropdownOverlay,
+  SelectInput,
+  ActionList,
+  ActionListItem,
 } from '@razorpay/blade/components';
 import { PRICING_MODELS, PACING_TYPES } from '../../../../shared/constants/enums';
-import { formatCurrency } from '../../../../shared/utils/formatters';
+import { PUBLISHERS } from '../../../../shared/constants/publishers';
+import { formatCurrency, paisaToRupees, rupeesToPaisa } from '../../../../shared/utils/formatters';
 import type { WizardFormData } from '../../hooks/useWizardState';
 
 interface StepCampaignDetailsProps {
@@ -25,11 +30,6 @@ interface StepCampaignDetailsProps {
 }
 
 function StepCampaignDetails({ formData, errors, updateField }: StepCampaignDetailsProps) {
-  const dailyBudgetWarning =
-    formData.dailyBudget &&
-    formData.totalBudget &&
-    Number(formData.dailyBudget) > Number(formData.totalBudget) / 30;
-
   return (
     <Box display="flex" justifyContent="center">
       <Box width="100%" maxWidth="640px" display="flex" flexDirection="column" gap="spacing.6">
@@ -77,21 +77,21 @@ function StepCampaignDetails({ formData, errors, updateField }: StepCampaignDeta
                 maxCharacters={500}
               />
               <TextInput
-                label="Priority (1-10)"
+                label="Priority Level"
                 placeholder="5"
                 type="number"
                 value={formData.priority}
                 onChange={({ value }) => updateField('priority', value ?? '')}
-                helpText="1 = lowest, 10 = highest"
+                helpText="1 = highest priority, 10 = lowest priority"
               />
             </Box>
           </CardBody>
         </Card>
 
-        {/* Budget & Pricing */}
+        {/* Pricing Model */}
         <Card>
           <CardHeader>
-            <CardHeaderLeading title="Budget & Pricing" />
+            <CardHeaderLeading title="Pricing Model" />
           </CardHeader>
           <CardBody>
             <Box display="flex" flexDirection="column" gap="spacing.5">
@@ -108,51 +108,49 @@ function StepCampaignDetails({ formData, errors, updateField }: StepCampaignDeta
                 ))}
               </RadioGroup>
               <TextInput
-                label="Price Value (in paisa)"
-                placeholder="e.g., 1500"
+                label="Price Value (₹)"
+                placeholder="e.g., 15"
                 type="number"
-                value={formData.priceValue}
-                onChange={({ value }) => updateField('priceValue', value ?? '')}
+                value={formData.priceValue ? String(paisaToRupees(Number(formData.priceValue))) : ''}
+                onChange={({ value }) => updateField('priceValue', value ? String(rupeesToPaisa(Number(value))) : '')}
                 necessityIndicator="required"
                 validationState={errors.priceValue ? 'error' : 'none'}
                 errorText={errors.priceValue}
-                helpText={
-                  formData.priceValue
-                    ? `= ${formatCurrency(Number(formData.priceValue))}`
-                    : 'Enter amount in paisa'
-                }
+                helpText="Enter price in rupees"
               />
-              <Divider />
+            </Box>
+          </CardBody>
+        </Card>
+
+        {/* Budget and Pacing */}
+        <Card>
+          <CardHeader>
+            <CardHeaderLeading title="Budget and Pacing" />
+          </CardHeader>
+          <CardBody>
+            <Box display="flex" flexDirection="column" gap="spacing.5">
               <TextInput
-                label="Total Budget (in paisa)"
-                placeholder="e.g., 50000000"
+                label="Total Budget (₹)"
+                placeholder="e.g., 500000"
                 type="number"
-                value={formData.totalBudget}
-                onChange={({ value }) => updateField('totalBudget', value ?? '')}
+                value={formData.totalBudget ? String(paisaToRupees(Number(formData.totalBudget))) : ''}
+                onChange={({ value }) => updateField('totalBudget', value ? String(rupeesToPaisa(Number(value))) : '')}
                 necessityIndicator="required"
                 validationState={errors.totalBudget ? 'error' : 'none'}
                 errorText={errors.totalBudget}
-                helpText={formData.totalBudget ? `= ${formatCurrency(Number(formData.totalBudget))}` : ''}
+                helpText="Enter total campaign budget in rupees"
               />
               <TextInput
-                label="Daily Budget (in paisa)"
-                placeholder="e.g., 1500000"
+                label="Daily Budget (₹)"
+                placeholder="e.g., 15000"
                 type="number"
-                value={formData.dailyBudget}
-                onChange={({ value }) => updateField('dailyBudget', value ?? '')}
+                value={formData.dailyBudget ? String(paisaToRupees(Number(formData.dailyBudget))) : ''}
+                onChange={({ value }) => updateField('dailyBudget', value ? String(rupeesToPaisa(Number(value))) : '')}
                 necessityIndicator="required"
                 validationState={errors.dailyBudget ? 'error' : 'none'}
                 errorText={errors.dailyBudget}
-                helpText={formData.dailyBudget ? `= ${formatCurrency(Number(formData.dailyBudget))}` : ''}
+                helpText="Enter daily spending limit in rupees"
               />
-              {dailyBudgetWarning && (
-                <Alert
-                  color="notice"
-                  title="Budget Warning"
-                  description="Daily budget exceeds total budget / 30 days. This may exhaust the budget quickly."
-                  isDismissible={false}
-                />
-              )}
               <RadioGroup
                 label="Pacing"
                 value={formData.pacing}
@@ -212,6 +210,63 @@ function StepCampaignDetails({ formData, errors, updateField }: StepCampaignDeta
                   </Text>
                 </Box>
               )}
+            </Box>
+          </CardBody>
+        </Card>
+
+        {/* Segment Targeting */}
+        <Card>
+          <CardHeader>
+            <CardHeaderLeading title="Segment Targeting (Optional)" />
+          </CardHeader>
+          <CardBody>
+            <Box display="flex" flexDirection="column" gap="spacing.5">
+              <Alert
+                color="information"
+                description="If no segment is added, ad will be shown to everyone"
+                isDismissible={false}
+              />
+              <TextInput
+                label="Whitelist Segments"
+                placeholder="fashion, beauty, lifestyle"
+                value={formData.segmentWhitelist}
+                onChange={({ value }) => updateField('segmentWhitelist', value ?? '')}
+                helpText="Comma-separated segment names to target"
+              />
+              <TextInput
+                label="Blacklist Segments"
+                placeholder="gambling, alcohol"
+                value={formData.segmentBlacklist}
+                onChange={({ value }) => updateField('segmentBlacklist', value ?? '')}
+                helpText="Comma-separated segment names to exclude"
+              />
+            </Box>
+          </CardBody>
+        </Card>
+
+        {/* Publishers */}
+        <Card>
+          <CardHeader>
+            <CardHeaderLeading title="Publishers (Optional)" />
+          </CardHeader>
+          <CardBody>
+            <Box display="flex" flexDirection="column" gap="spacing.5">
+              <Dropdown selectionType="multiple">
+                <SelectInput
+                  label="Publishers"
+                  placeholder="Select publishers (leave empty for all)"
+                  value={formData.publisherIds}
+                  onChange={({ values }) => updateField('publisherIds', values ?? [])}
+                  helpText="Choose where this campaign should appear"
+                />
+                <DropdownOverlay>
+                  <ActionList>
+                    {PUBLISHERS.map((publisher) => (
+                      <ActionListItem key={publisher.id} title={publisher.name} value={publisher.id} />
+                    ))}
+                  </ActionList>
+                </DropdownOverlay>
+              </Dropdown>
             </Box>
           </CardBody>
         </Card>

@@ -1,10 +1,13 @@
 import { useState, useCallback } from 'react';
+import type { Campaign } from '../types';
+import type { Ad } from '../../ads/types';
 
 export interface WizardAdEntry {
   id: string;
   name: string;
   type: 'BANNER' | 'SCRATCH_CARD';
   rewardId: string;
+  status: boolean; // true = active, false = inactive
   mappedCreativeIds: string[];
 }
 
@@ -30,6 +33,9 @@ export interface WizardFormData {
   pacing: string;
   startDate: string;
   endDate: string;
+  segmentWhitelist: string; // comma-separated segment names
+  segmentBlacklist: string; // comma-separated segment names
+  publisherIds: string[]; // publisher IDs
 
   // Step 3: Ads
   ads: WizardAdEntry[];
@@ -60,6 +66,9 @@ const INITIAL_FORM_DATA: WizardFormData = {
   pacing: 'EVEN',
   startDate: '',
   endDate: '',
+  segmentWhitelist: '',
+  segmentBlacklist: '',
+  publisherIds: [],
 
   ads: [],
 };
@@ -117,6 +126,11 @@ export function useWizardState() {
             errors.totalBudget = 'Valid total budget is required';
           if (!formData.dailyBudget || isNaN(Number(formData.dailyBudget)))
             errors.dailyBudget = 'Valid daily budget is required';
+          // Hard validation: block if daily budget exceeds total budget
+          if (formData.dailyBudget && formData.totalBudget &&
+              Number(formData.dailyBudget) > Number(formData.totalBudget)) {
+            errors.dailyBudget = 'Daily budget cannot exceed total budget';
+          }
           break;
 
         case 2: // Ads
@@ -178,6 +192,54 @@ export function useWizardState() {
     setStepErrors({});
   }, []);
 
+  const loadCampaignData = useCallback((campaign: Campaign, ads: Ad[], mode: 'edit' | 'clone') => {
+    const campaignName = mode === 'clone' ? `${campaign.name} (Copy)` : campaign.name;
+
+    // Convert segments to comma-separated strings
+    const segmentWhitelist = campaign.segments?.whitelist.join(', ') || '';
+    const segmentBlacklist = campaign.segments?.blacklist.join(', ') || '';
+
+    // Map ads to wizard format
+    const wizardAds: WizardAdEntry[] = ads.map(ad => ({
+      id: mode === 'clone' ? `wizard_ad_${Date.now()}_${Math.random()}` : ad.id,
+      name: mode === 'clone' ? `${ad.name} (Copy)` : ad.name,
+      type: ad.type,
+      rewardId: ad.rewardId || '',
+      status: ad.status,
+      mappedCreativeIds: ad.mappedCreativeIds || [],
+    }));
+
+    setFormData({
+      // Advertiser
+      advertiserId: campaign.advertiserId,
+      advertiserName: campaign.advertiserName,
+      isNewAdvertiser: false,
+      newAdvertiserName: '',
+      newAdvertiserEmail: '',
+      newAdvertiserMerchantId: '',
+      newAdvertiserWebsite: '',
+      // Campaign Details (convert paisa to rupees for UI)
+      campaignName,
+      campaignType: campaign.type,
+      description: campaign.description || '',
+      priority: String(campaign.priority),
+      pricingModel: campaign.pricingModel,
+      priceValue: String(campaign.priceValue), // Keep in paisa, UI will convert
+      totalBudget: String(campaign.totalBudget), // Keep in paisa, UI will convert
+      dailyBudget: String(campaign.dailyBudget), // Keep in paisa, UI will convert
+      pacing: campaign.pacing,
+      startDate: campaign.startDate || '',
+      endDate: campaign.endDate || '',
+      segmentWhitelist,
+      segmentBlacklist,
+      publisherIds: campaign.publisherIds || [],
+      // Ads
+      ads: wizardAds,
+    });
+
+    setStepErrors({});
+  }, []);
+
   return {
     currentStep,
     formData,
@@ -189,6 +251,7 @@ export function useWizardState() {
     goBack,
     goTo,
     reset,
+    loadCampaignData,
   };
 }
 

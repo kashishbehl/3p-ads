@@ -8,6 +8,7 @@ import AdvertisersList from '../modules/library/pages/AdvertisersList';
 import AdvertiserDetail from '../modules/library/pages/AdvertiserDetail';
 import CreativesList from '../modules/library/pages/CreativesList';
 import CreativeDetail from '../modules/library/pages/CreativeDetail';
+import SegmentsList from '../modules/segments/pages/SegmentsList';
 
 function AppRoutes() {
   return (
@@ -17,11 +18,14 @@ function AppRoutes() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="campaigns" element={<CampaignsList />} />
         <Route path="campaigns/create" element={<CampaignWizard />} />
+        <Route path="campaigns/:id/edit" element={<CampaignWizard mode="edit" />} />
+        <Route path="campaigns/:id/clone" element={<CampaignWizard mode="clone" />} />
         <Route path="campaigns/:id" element={<CampaignWorkspace />} />
         <Route path="library/advertisers" element={<AdvertisersList />} />
         <Route path="library/advertisers/:id" element={<AdvertiserDetail />} />
         <Route path="library/creatives" element={<CreativesList />} />
         <Route path="library/creatives/:id" element={<CreativeDetail />} />
+        <Route path="library/segments" element={<SegmentsList />} />
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>

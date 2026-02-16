@@ -35,6 +35,7 @@ function StepAddAds({ formData, errors, updateAds }: StepAddAdsProps) {
       name: '',
       type: 'BANNER',
       rewardId: '',
+      status: true, // Default to active
       mappedCreativeIds: [],
     };
     updateAds([...formData.ads, newAd]);
@@ -149,6 +150,24 @@ function StepAddAds({ formData, errors, updateAds }: StepAddAdsProps) {
                     helpText="Unique reward ID for the scratch card (exactly 21 characters)"
                   />
                 )}
+                <RadioGroup
+                  label="Status"
+                  value={ad.status ? 'active' : 'inactive'}
+                  onChange={({ value }) => {
+                    const updated = formData.ads.map((a, i) =>
+                      i === index ? { ...a, status: value === 'active' } : a
+                    );
+                    updateAds(updated);
+                  }}
+                  name={`adStatus_${index}`}
+                >
+                  <Radio value="active" helpText="Ad will be shown to users">
+                    Active
+                  </Radio>
+                  <Radio value="inactive" helpText="Ad is paused">
+                    Inactive
+                  </Radio>
+                </RadioGroup>
               </Box>
             </CardBody>
           </Card>

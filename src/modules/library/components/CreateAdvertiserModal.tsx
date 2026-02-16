@@ -28,6 +28,7 @@ function CreateAdvertiserModal({ isOpen, onClose }: CreateAdvertiserModalProps) 
     name: '',
     contactEmail: '',
     merchantId: '',
+    logoUrl: '',
     websiteUrl: '',
     contactPhone: '',
     programId: '',
@@ -60,7 +61,7 @@ function CreateAdvertiserModal({ isOpen, onClose }: CreateAdvertiserModalProps) 
       },
     });
     onClose();
-    setFormData({ name: '', contactEmail: '', merchantId: '', websiteUrl: '', contactPhone: '', programId: '' });
+    setFormData({ name: '', contactEmail: '', merchantId: '', logoUrl: '', websiteUrl: '', contactPhone: '', programId: '' });
     setErrors({});
   };
 
@@ -70,7 +71,7 @@ function CreateAdvertiserModal({ isOpen, onClose }: CreateAdvertiserModalProps) 
   };
 
   const resetAndClose = () => {
-    setFormData({ name: '', contactEmail: '', merchantId: '', websiteUrl: '', contactPhone: '', programId: '' });
+    setFormData({ name: '', contactEmail: '', merchantId: '', logoUrl: '', websiteUrl: '', contactPhone: '', programId: '' });
     setErrors({});
     onClose();
   };
@@ -125,6 +126,14 @@ function CreateAdvertiserModal({ isOpen, onClose }: CreateAdvertiserModalProps) 
                 onChange={({ value }) => updateField('merchantId', value ?? '')}
                 helpText="Optional. 18-character merchant identifier"
                 maxCharacters={18}
+              />
+              <TextInput
+                label="Logo URL"
+                placeholder="https://cdn.example.com/logo.png"
+                type="url"
+                value={formData.logoUrl}
+                onChange={({ value }) => updateField('logoUrl', value ?? '')}
+                helpText="Optional. URL to advertiser's logo image"
               />
             </Box>
 

@@ -20,6 +20,7 @@ export interface Campaign {
   activeAds: number;
   segments?: { whitelist: string[]; blacklist: string[] };
   guardrails?: string[];
+  publisherIds?: string[]; // e.g., ['pub_razorpay_checkout', 'pub_razorpay_pos']
   createdAt: string;
 }
 

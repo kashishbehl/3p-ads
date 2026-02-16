@@ -11,6 +11,7 @@ import {
   AnnouncementIcon,
   UsersIcon,
   ImageIcon,
+  TagIcon,
   RazorpayIcon,
 } from '@razorpay/blade/components';
 
@@ -91,6 +92,11 @@ function Sidebar() {
             title="Creatives"
             href="/admin/library/creatives"
             activeOnLinks={['/admin/library/creatives/:id']}
+          />
+          <NavLink
+            icon={TagIcon}
+            title="Segments"
+            href="/admin/library/segments"
           />
         </SideNavSection>
       </SideNavBody>

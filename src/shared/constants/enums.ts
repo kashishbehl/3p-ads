@@ -1,5 +1,5 @@
 // Campaign Pricing Models
-export const PRICING_MODELS = ['CPC', 'CPM', 'CPA', 'ROAS', 'CPCO', 'CPL', 'CPQL'] as const;
+export const PRICING_MODELS = ['CPC', 'CPM', 'CPR'] as const;
 export type PricingModel = (typeof PRICING_MODELS)[number];
 
 // Campaign Statuses
