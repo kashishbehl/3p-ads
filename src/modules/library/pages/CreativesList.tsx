@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -76,8 +76,8 @@ function CreativesList() {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6">
-        <Heading size="xlarge">Creatives</Heading>
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6" flexWrap="wrap" gap="spacing.4">
+        <Heading size="large">Creatives</Heading>
         <Box display="flex" gap="spacing.3">
           <Box display="flex" gap="spacing.1">
             <Tooltip content="Grid View">

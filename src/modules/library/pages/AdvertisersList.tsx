@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -72,8 +72,8 @@ function AdvertisersList() {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6">
-        <Heading size="xlarge">Advertisers</Heading>
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6" flexWrap="wrap" gap="spacing.4">
+        <Heading size="large">Advertisers</Heading>
         <Button icon={PlusIcon} onClick={() => setIsCreateModalOpen(true)}>
           Create Advertiser
         </Button>

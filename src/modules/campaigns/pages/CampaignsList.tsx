@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -30,6 +30,7 @@ import {
   MoreIcon,
   Dropdown,
   DropdownOverlay,
+  DropdownIconButton,
   SelectInput,
   ActionList,
   ActionListItem,
@@ -88,8 +89,8 @@ function CampaignsList() {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6">
-        <Heading size="xlarge">Campaigns</Heading>
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6" flexWrap="wrap" gap="spacing.4">
+        <Heading size="large">Campaigns</Heading>
         <Button icon={PlusIcon} onClick={() => navigate('/admin/campaigns/create')}>
           Create Campaign
         </Button>
@@ -215,9 +216,8 @@ function CampaignsList() {
                     </TableCell>
                     <TableCell textAlign="center">
                       <Dropdown>
-                        <IconButton
+                        <DropdownIconButton
                           icon={MoreIcon}
-                          size="small"
                           accessibilityLabel="Actions"
                         />
                         <DropdownOverlay>

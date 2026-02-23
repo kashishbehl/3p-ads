@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -43,9 +42,9 @@ function Dashboard() {
   return (
     <Box>
       {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6">
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6" flexWrap="wrap" gap="spacing.4">
         <Box>
-          <Heading size="xlarge">Dashboard</Heading>
+          <Heading size="large">Dashboard</Heading>
           <Text size="small" color="surface.text.gray.subtle" marginTop="spacing.2">
             Overview of your 3P Ad Network
           </Text>
@@ -56,8 +55,13 @@ function Dashboard() {
       </Box>
 
       {/* Stats Cards */}
-      <Box display="flex" gap="spacing.4" marginBottom="spacing.6" flexWrap="wrap">
-        <Card padding="spacing.5" width={{ base: '100%', s: '48%', l: 'auto' }} flex={{ l: '1' }}>
+      <Box
+        display="grid"
+        gridTemplateColumns={{ base: '1fr', s: '1fr 1fr', l: '1fr 1fr 1fr 1fr' }}
+        gap="spacing.4"
+        marginBottom="spacing.6"
+      >
+        <Card padding="spacing.5">
           <CardBody>
             <Box display="flex" flexDirection="column" gap="spacing.2">
               <Text size="small" color="surface.text.gray.subtle">Active Campaigns</Text>
@@ -71,7 +75,7 @@ function Dashboard() {
           </CardBody>
         </Card>
 
-        <Card padding="spacing.5" width={{ base: '100%', s: '48%', l: 'auto' }} flex={{ l: '1' }}>
+        <Card padding="spacing.5">
           <CardBody>
             <Box display="flex" flexDirection="column" gap="spacing.2">
               <Text size="small" color="surface.text.gray.subtle">Total Budget</Text>
@@ -90,7 +94,7 @@ function Dashboard() {
           </CardBody>
         </Card>
 
-        <Card padding="spacing.5" width={{ base: '100%', s: '48%', l: 'auto' }} flex={{ l: '1' }}>
+        <Card padding="spacing.5">
           <CardBody>
             <Box display="flex" flexDirection="column" gap="spacing.2">
               <Text size="small" color="surface.text.gray.subtle">Advertisers</Text>
@@ -102,7 +106,7 @@ function Dashboard() {
           </CardBody>
         </Card>
 
-        <Card padding="spacing.5" width={{ base: '100%', s: '48%', l: 'auto' }} flex={{ l: '1' }}>
+        <Card padding="spacing.5">
           <CardBody>
             <Box display="flex" flexDirection="column" gap="spacing.2">
               <Text size="small" color="surface.text.gray.subtle">Active Ads</Text>
@@ -120,7 +124,7 @@ function Dashboard() {
       {/* Content Row */}
       <Box display="flex" gap="spacing.5" flexWrap="wrap">
         {/* Recent Campaigns */}
-        <Card flex={1} minWidth="360px">
+        <Card flex={1} minWidth={{ base: '100%', m: '360px' }}>
           <CardHeader>
             <CardHeaderLeading
               title="Recent Campaigns"

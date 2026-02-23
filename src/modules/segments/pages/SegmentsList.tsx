@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Box,
   Heading,
@@ -52,8 +52,8 @@ function SegmentsList() {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6">
-        <Heading size="xlarge">Segments</Heading>
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="spacing.6" flexWrap="wrap" gap="spacing.4">
+        <Heading size="large">Segments</Heading>
         <Button icon={PlusIcon} onClick={() => setIsCreateModalOpen(true)}>
           Create Segment
         </Button>

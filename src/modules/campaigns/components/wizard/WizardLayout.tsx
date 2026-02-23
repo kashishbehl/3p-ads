@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import {
   Box,
   Button,
@@ -25,7 +25,9 @@ interface WizardLayoutProps {
   onCancel: () => void;
   isLastStep: boolean;
   isFirstStep: boolean;
-  children: React.ReactNode;
+  title?: string;
+  submitButtonText?: string;
+  children: ReactNode;
 }
 
 function WizardLayout({
@@ -37,6 +39,8 @@ function WizardLayout({
   onCancel,
   isLastStep,
   isFirstStep,
+  title = 'Create Campaign',
+  submitButtonText,
   children,
 }: WizardLayoutProps) {
   return (
@@ -49,7 +53,7 @@ function WizardLayout({
         marginBottom="spacing.5"
       >
         <Box>
-          <Heading size="xlarge">Create Campaign</Heading>
+          <Heading size="xlarge">{title}</Heading>
           <Text size="small" color="surface.text.gray.subtle" marginTop="spacing.1">
             Step {currentStep + 1} of {WIZARD_STEPS.length}: {WIZARD_STEPS[currentStep].title}
           </Text>
@@ -121,7 +125,7 @@ function WizardLayout({
               icon={CheckCircleIcon}
               onClick={onNext}
             >
-              Launch Campaign
+              {submitButtonText || 'Launch Campaign'}
             </Button>
           ) : (
             <Button

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import {
   Box,
   Heading,
@@ -29,7 +29,7 @@ interface StepAdvertiserProps {
 
 function StepAdvertiser({ formData, errors, updateField }: StepAdvertiserProps) {
   const activeAdvertisers = mockAdvertisers.filter((a) => a.status === 'ACTIVE');
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredAdvertisers = activeAdvertisers.filter(
     (adv) =>

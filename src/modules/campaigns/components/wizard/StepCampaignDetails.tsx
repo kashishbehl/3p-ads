@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Box,
   Heading,
@@ -20,7 +19,7 @@ import {
 } from '@razorpay/blade/components';
 import { PRICING_MODELS, PACING_TYPES } from '../../../../shared/constants/enums';
 import { PUBLISHERS } from '../../../../shared/constants/publishers';
-import { formatCurrency, paisaToRupees, rupeesToPaisa } from '../../../../shared/utils/formatters';
+import { paisaToRupees, rupeesToPaisa } from '../../../../shared/utils/formatters';
 import type { WizardFormData } from '../../hooks/useWizardState';
 
 interface StepCampaignDetailsProps {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@razorpay/blade/components';
 import { useWizardState, WIZARD_STEPS } from '../hooks/useWizardState';
@@ -38,6 +38,7 @@ function CampaignWizard({ mode = 'create' }: CampaignWizardProps) {
       const campaignAds = mockAds.filter((ad) => ad.campaignId === id);
       wizard.loadCampaignData(campaign, campaignAds, mode);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, id]);
 
   const handleCancel = () => {
@@ -170,6 +171,8 @@ function CampaignWizard({ mode = 'create' }: CampaignWizardProps) {
       onCancel={handleCancel}
       isLastStep={wizard.currentStep === WIZARD_STEPS.length - 1}
       isFirstStep={wizard.currentStep === 0}
+      title={getPageTitle()}
+      submitButtonText={getSubmitButtonText()}
     >
       {renderStep()}
     </WizardLayout>
